@@ -26,6 +26,7 @@ import { ReplicationMode } from "../types/ReplicationMode"
 import { TypeORMError } from "../../error"
 import { MetadataTableType } from "../types/MetadataTableType"
 import { InstanceChecker } from "../../util/InstanceChecker"
+import { BroadcasterResult } from "../../subscriber/BroadcasterResult"
 
 /**
  * Runs queries on a single mysql database connection.
@@ -190,19 +191,29 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
         if (this.isReleased) throw new QueryRunnerAlreadyReleasedError()
 
         return new Promise(async (ok, fail) => {
+            const broadcasterResult = new BroadcasterResult()
+
             try {
                 const databaseConnection = await this.connect()
+
                 this.driver.connection.logger.logQuery(query, parameters, this)
+                this.broadcaster.broadcastBeforeQueryEvent(
+                    broadcasterResult,
+                    query,
+                    parameters,
+                )
+
                 const queryStartTime = +new Date()
                 databaseConnection.query(
                     query,
                     parameters,
-                    (err: any, raw: any) => {
+                    async (err: any, raw: any) => {
                         // log slow queries if maxQueryExecution time is set
                         const maxQueryExecutionTime =
                             this.driver.options.maxQueryExecutionTime
                         const queryEndTime = +new Date()
                         const queryExecutionTime = queryEndTime - queryStartTime
+
                         if (
                             maxQueryExecutionTime &&
                             queryExecutionTime > maxQueryExecutionTime
@@ -221,10 +232,30 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
                                 parameters,
                                 this,
                             )
+                            this.broadcaster.broadcastAfterQueryEvent(
+                                broadcasterResult,
+                                query,
+                                parameters,
+                                false,
+                                undefined,
+                                undefined,
+                                err,
+                            )
+
                             return fail(
                                 new QueryFailedError(query, parameters, err),
                             )
                         }
+
+                        this.broadcaster.broadcastAfterQueryEvent(
+                            broadcasterResult,
+                            query,
+                            parameters,
+                            true,
+                            queryExecutionTime,
+                            raw,
+                            undefined,
+                        )
 
                         const result = new QueryResult()
 
@@ -249,6 +280,8 @@ export class MysqlQueryRunner extends BaseQueryRunner implements QueryRunner {
                 )
             } catch (err) {
                 fail(err)
+            } finally {
+                await broadcasterResult.wait()
             }
         })
     }
