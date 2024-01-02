@@ -189,6 +189,7 @@ export class CockroachQueryRunner
         }
 
         if (this.transactionDepth === 0) {
+            this.transactionDepth += 1
             await this.query("START TRANSACTION")
             await this.query("SAVEPOINT cockroach_restart")
             if (isolationLevel) {
@@ -197,10 +198,10 @@ export class CockroachQueryRunner
                 )
             }
         } else {
-            await this.query(`SAVEPOINT typeorm_${this.transactionDepth}`)
+            this.transactionDepth += 1
+            await this.query(`SAVEPOINT typeorm_${this.transactionDepth - 1}`)
         }
 
-        this.transactionDepth += 1
         this.storeQueries = true
 
         await this.broadcaster.broadcast("AfterTransactionStart")
@@ -216,18 +217,18 @@ export class CockroachQueryRunner
         await this.broadcaster.broadcast("BeforeTransactionCommit")
 
         if (this.transactionDepth > 1) {
-            await this.query(
-                `RELEASE SAVEPOINT typeorm_${this.transactionDepth - 1}`,
-            )
             this.transactionDepth -= 1
+            await this.query(
+                `RELEASE SAVEPOINT typeorm_${this.transactionDepth}`,
+            )
         } else {
             this.storeQueries = false
+            this.transactionDepth -= 1
             await this.query("RELEASE SAVEPOINT cockroach_restart")
             await this.query("COMMIT")
             this.queries = []
             this.isTransactionActive = false
             this.transactionRetries = 0
-            this.transactionDepth -= 1
         }
 
         await this.broadcaster.broadcast("AfterTransactionCommit")
@@ -243,17 +244,18 @@ export class CockroachQueryRunner
         await this.broadcaster.broadcast("BeforeTransactionRollback")
 
         if (this.transactionDepth > 1) {
+            this.transactionDepth -= 1
             await this.query(
-                `ROLLBACK TO SAVEPOINT typeorm_${this.transactionDepth - 1}`,
+                `ROLLBACK TO SAVEPOINT typeorm_${this.transactionDepth}`,
             )
         } else {
             this.storeQueries = false
+            this.transactionDepth -= 1
             await this.query("ROLLBACK")
             this.queries = []
             this.isTransactionActive = false
             this.transactionRetries = 0
         }
-        this.transactionDepth -= 1
 
         await this.broadcaster.broadcast("AfterTransactionRollback")
     }
