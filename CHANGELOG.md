@@ -84,6 +84,8 @@
 -   With node-oracledb the thin client is used as default. Added a option to use the thick client. Also added the option to specify the instant client lib
 -   MongoDB: from the previous behavior of returning a result with metadata describing when a document is not found.
     See: https://github.com/mongodb/node-mongodb-native/blob/HEAD/etc/notes/CHANGES_6.0.0.md
+-   [new nullable embeds feature](https://github.com/typeorm/typeorm/pull/10289) introduced a breaking change which might enforce you to update types on your entities to ` | null`,
+    if all columns in your embed entity are nullable. Since database queries now return embedded property as `null` if all its column values are null.
 
 ## [0.3.17](https://github.com/typeorm/typeorm/compare/0.3.16...0.3.17) (2023-06-20)
 
