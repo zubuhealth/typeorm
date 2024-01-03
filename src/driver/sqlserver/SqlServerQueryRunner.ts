@@ -4161,4 +4161,16 @@ export class SqlServerQueryRunner
                 return ISOLATION_LEVEL.READ_COMMITTED
         }
     }
+
+    /**
+     * Change table comment.
+     */
+    changeTableComment(
+        tableOrName: Table | string,
+        comment?: string,
+    ): Promise<void> {
+        throw new TypeORMError(
+            `sqlserver driver does not support change table comment.`,
+        )
+    }
 }
