@@ -1438,7 +1438,7 @@ export abstract class AbstractSqliteQueryRunner
                                 dbColumn["hidden"] === 2 ? "VIRTUAL" : "STORED"
 
                             const asExpressionQuery =
-                                await this.selectTypeormMetadataSql({
+                                this.selectTypeormMetadataSql({
                                     table: table.name,
                                     type: MetadataTableType.GENERATED_COLUMN,
                                     name: tableColumn.name,
