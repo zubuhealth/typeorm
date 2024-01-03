@@ -1,3 +1,9 @@
+## [0.3.19](https://github.com/typeorm/typeorm/compare/0.3.18...0.3.19) (2024-01-03)
+
+### Bug Fixes
+
+-   fixed `Cannot read properties of undefined (reading 'sync')` caused after glob package upgrade
+
 ## [0.3.18](https://github.com/typeorm/typeorm/compare/0.3.17...0.3.18) (2024-01-03)
 
 ### Bug Fixes
