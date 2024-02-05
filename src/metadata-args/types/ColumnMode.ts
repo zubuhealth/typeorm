@@ -16,3 +16,4 @@ export type ColumnMode =
     | "treeLevel"
     | "objectId"
     | "array"
+    | "tenant"

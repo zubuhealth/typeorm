@@ -51,6 +51,11 @@ export interface MappedColumnTypes {
     deleteDateNullable: boolean
 
     /**
+     * tenant name type.
+     */
+    tenant: ColumnType
+
+    /**
      * Column type for the version column.
      */
     version: ColumnType

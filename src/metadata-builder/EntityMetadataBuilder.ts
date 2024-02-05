@@ -1062,6 +1062,9 @@ export class EntityMetadataBuilder {
         entityMetadata.deleteDateColumn = entityMetadata.columns.find(
             (column) => column.isDeleteDate,
         )
+        entityMetadata.tenantColumn = entityMetadata.columns.find(
+            (column) => column.isTenant,
+        )
         entityMetadata.versionColumn = entityMetadata.columns.find(
             (column) => column.isVersion,
         )

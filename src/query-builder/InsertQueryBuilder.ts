@@ -459,10 +459,8 @@ export class InsertQueryBuilder<
         // add VALUES expression
         if (valuesExpression) {
             if (
-                (
-                    this.connection.driver.options.type === "oracle" ||
-                    this.connection.driver.options.type === "sap"
-                ) &&
+                (this.connection.driver.options.type === "oracle" ||
+                    this.connection.driver.options.type === "sap") &&
                 this.getValueSets().length > 1
             ) {
                 query += ` ${valuesExpression}`
@@ -810,6 +808,9 @@ export class InsertQueryBuilder<
                         //     const rightColumnName = this.connection.driver.escape(column.entityMetadata.nestedSetRightColumn!.databaseName);
                         //     const subQuery = `(SELECT c.max + 2 FROM (SELECT MAX(${rightColumnName}) as max from ${tableName}) c)`;
                         //     expression += subQuery;
+                    } else if (column.isTenant) {
+                        value = this.connection.options.tenant
+                        expression += this.createParameter(value)
                     } else if (column.isDiscriminator) {
                         expression += this.createParameter(
                             this.expressionMap.mainAlias!.metadata

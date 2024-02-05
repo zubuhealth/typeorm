@@ -285,6 +285,11 @@ export class EntityMetadata {
     deleteDateColumn?: ColumnMetadata
 
     /**
+     * Gets entity column
+     */
+    tenantColumn?: ColumnMetadata
+
+    /**
      * Gets entity column which contains an entity version.
      */
     versionColumn?: ColumnMetadata
@@ -955,15 +960,18 @@ export class EntityMetadata {
         columns: ColumnMetadata[],
         options?: { skipNulls?: boolean },
     ): ObjectLiteral | undefined {
-        return columns.reduce((map, column) => {
-            const value = column.getEntityValueMap(entity, options)
+        return columns.reduce(
+            (map, column) => {
+                const value = column.getEntityValueMap(entity, options)
 
-            // make sure that none of the values of the columns are not missing
-            if (map === undefined || value === null || value === undefined)
-                return undefined
+                // make sure that none of the values of the columns are not missing
+                if (map === undefined || value === null || value === undefined)
+                    return undefined
 
-            return OrmUtils.mergeDeep(map, value)
-        }, {} as ObjectLiteral | undefined)
+                return OrmUtils.mergeDeep(map, value)
+            },
+            {} as ObjectLiteral | undefined,
+        )
     }
 
     // ---------------------------------------------------------------------
@@ -1132,6 +1140,7 @@ export class EntityMetadata {
                 column.isCreateDate ||
                 column.isUpdateDate ||
                 column.isDeleteDate ||
+                column.isTenant ||
                 column.isVersion
             )
         })

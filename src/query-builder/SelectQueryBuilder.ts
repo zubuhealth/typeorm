@@ -1870,9 +1870,8 @@ export class SelectQueryBuilder<Entity extends ObjectLiteral>
             }
 
             this.expressionMap.queryEntity = true
-            const entitiesAndRaw = await this.executeEntitiesAndRawResults(
-                queryRunner,
-            )
+            const entitiesAndRaw =
+                await this.executeEntitiesAndRawResults(queryRunner)
             this.expressionMap.queryEntity = false
             const cacheId = this.expressionMap.cacheId
             // Creates a new cacheId for the count query, or it will retreive the above query results
@@ -2045,6 +2044,12 @@ export class SelectQueryBuilder<Entity extends ObjectLiteral>
                 joinAttribute.condition = joinAttribute.condition
                     ? ` ${joinAttribute.condition} AND ${conditionDeleteColumn}`
                     : `${conditionDeleteColumn}`
+            }
+            if (joinAttributeMetadata.tenantColumn) {
+                const conditionTenantColumn = `${aliasName}.${joinAttributeMetadata.tenantColumn.propertyName} = '${this.connection.options.tenant}'`
+                joinAttribute.condition = joinAttribute.condition
+                    ? ` ${joinAttribute.condition} AND ${conditionTenantColumn}`
+                    : `${conditionTenantColumn}`
             }
             // todo: find and set metadata right there?
             joinAttribute.alias = this.expressionMap.createAlias({
@@ -3554,9 +3559,8 @@ export class SelectQueryBuilder<Entity extends ObjectLiteral>
         if (rawResults.length > 0) {
             // transform raw results into entities
             const rawRelationIdResults = await relationIdLoader.load(rawResults)
-            const rawRelationCountResults = await relationCountLoader.load(
-                rawResults,
-            )
+            const rawRelationCountResults =
+                await relationCountLoader.load(rawResults)
             const transformer = new RawSqlResultsToEntityTransformer(
                 this.expressionMap,
                 this.connection.driver,
@@ -4148,8 +4152,8 @@ export class SelectQueryBuilder<Entity extends ObjectLiteral>
                     nulls?.toLowerCase() === "first"
                         ? "NULLS FIRST"
                         : nulls?.toLowerCase() === "last"
-                        ? "NULLS LAST"
-                        : undefined
+                          ? "NULLS LAST"
+                          : undefined
 
                 let aliasPath = `${alias}.${propertyPath}`
                 // const selection = this.expressionMap.selects.find(
@@ -4394,7 +4398,8 @@ export class SelectQueryBuilder<Entity extends ObjectLiteral>
                                             .inverseRelation!.inverseJoinColumns.map(
                                                 (column) => {
                                                     return `${
-                                                        relation.inverseRelation!
+                                                        relation
+                                                            .inverseRelation!
                                                             .joinTableName
                                                     }.${
                                                         column.propertyName

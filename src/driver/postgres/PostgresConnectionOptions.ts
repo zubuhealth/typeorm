@@ -101,4 +101,9 @@ export interface PostgresConnectionOptions
      * @see [node-postgres defaults.parseInt8 implementation](https://github.com/brianc/node-postgres/blob/pg%408.8.0/packages/pg/lib/defaults.js#L80)
      */
     readonly parseInt8?: boolean
+
+    /**
+     * The name of the tenant to use for this connection.
+     */
+    readonly tenant?: string
 }

@@ -522,7 +522,10 @@ export abstract class QueryBuilder<Entity extends ObjectLiteral> {
      * Uses same query runner as current QueryBuilder.
      */
     createQueryBuilder(queryRunner?: QueryRunner): this {
-        return new (this.constructor as any)(this.connection, queryRunner ?? this.queryRunner)
+        return new (this.constructor as any)(
+            this.connection,
+            queryRunner ?? this.queryRunner,
+        )
     }
 
     /**
@@ -863,6 +866,19 @@ export abstract class QueryBuilder<Entity extends ObjectLiteral> {
                     : metadata.deleteDateColumn.propertyName
 
                 const condition = `${this.replacePropertyNames(column)} IS NULL`
+                conditionsArray.push(condition)
+            }
+
+            if (
+                this.expressionMap.queryType === "select" &&
+                metadata.tenantColumn
+            ) {
+                const column = this.expressionMap.aliasNamePrefixingEnabled
+                    ? this.expressionMap.mainAlias.name +
+                      "." +
+                      metadata.tenantColumn.propertyName
+                    : metadata.tenantColumn.propertyName
+                const condition = `${column} = '${this.connection.options.tenant}'`
                 conditionsArray.push(condition)
             }
 

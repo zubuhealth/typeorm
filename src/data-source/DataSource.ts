@@ -23,7 +23,6 @@ import { Migration } from "../migration/Migration"
 import { MongoRepository } from "../repository/MongoRepository"
 import { MongoEntityManager } from "../entity-manager/MongoEntityManager"
 import { EntityMetadataValidator } from "../metadata-builder/EntityMetadataValidator"
-import { DataSourceOptions } from "./DataSourceOptions"
 import { EntityManagerFactory } from "../entity-manager/EntityManagerFactory"
 import { DriverFactory } from "../driver/DriverFactory"
 import { ConnectionMetadataBuilder } from "../connection/ConnectionMetadataBuilder"
@@ -41,6 +40,7 @@ import { RelationIdLoader } from "../query-builder/RelationIdLoader"
 import { DriverUtils } from "../driver/DriverUtils"
 import { InstanceChecker } from "../util/InstanceChecker"
 import { ObjectLiteral } from "../common/ObjectLiteral"
+import { PostgresConnectionOptions } from "../driver/postgres/PostgresConnectionOptions"
 
 registerQueryBuilders()
 
@@ -69,7 +69,7 @@ export class DataSource {
     /**
      * Connection options.
      */
-    readonly options: DataSourceOptions
+    readonly options: PostgresConnectionOptions
 
     /**
      * Indicates if DataSource is initialized or not.
@@ -138,7 +138,7 @@ export class DataSource {
     // Constructor
     // -------------------------------------------------------------------------
 
-    constructor(options: DataSourceOptions) {
+    constructor(options: PostgresConnectionOptions) {
         registerQueryBuilders()
         this.name = options.name || "default"
         this.options = options
@@ -207,7 +207,7 @@ export class DataSource {
     /**
      * Updates current connection options with provided options.
      */
-    setOptions(options: Partial<DataSourceOptions>): this {
+    setOptions(options: Partial<PostgresConnectionOptions>): this {
         Object.assign(this.options, options)
 
         if (options.logger || options.logging) {
@@ -697,9 +697,10 @@ export class DataSource {
         const flattenedSubscribers = ObjectUtils.mixedListToArray(
             this.options.subscribers || [],
         )
-        const subscribers = await connectionMetadataBuilder.buildSubscribers(
-            flattenedSubscribers,
-        )
+        const subscribers =
+            await connectionMetadataBuilder.buildSubscribers(
+                flattenedSubscribers,
+            )
         ObjectUtils.assign(this, { subscribers: subscribers })
 
         // build entity metadatas
@@ -721,9 +722,8 @@ export class DataSource {
         const flattenedMigrations = ObjectUtils.mixedListToArray(
             this.options.migrations || [],
         )
-        const migrations = await connectionMetadataBuilder.buildMigrations(
-            flattenedMigrations,
-        )
+        const migrations =
+            await connectionMetadataBuilder.buildMigrations(flattenedMigrations)
         ObjectUtils.assign(this, { migrations: migrations })
 
         // validate all created entity metadatas to make sure user created entities are valid and correct
