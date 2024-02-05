@@ -131,6 +131,7 @@ export class MongoDriver implements Driver {
         metadataTable: "int",
         metadataName: "int",
         metadataValue: "int",
+        tenant: "int",
     }
 
     /**

@@ -154,4 +154,9 @@ export interface MysqlConnectionOptions
          */
         readonly defaultMode?: ReplicationMode
     }
+
+    /**
+     * The name of the tenant to use for this connection.
+     */
+    readonly tenant?: string
 }

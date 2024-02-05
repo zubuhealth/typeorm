@@ -52,4 +52,9 @@ export interface NativescriptConnectionOptions extends BaseDataSourceOptions {
     readonly androidFlags?: number
 
     readonly poolSize?: never
+
+    /**
+     * The name of the tenant to use for this connection.
+     */
+    readonly tenant?: string
 }

@@ -61,4 +61,9 @@ export interface SqliteConnectionOptions extends BaseDataSourceOptions {
      * @see https://www.sqlite.org/pragma.html#pragma_busy_timeout
      */
     readonly busyTimeout?: number
+
+    /**
+     * The name of the tenant to use for this connection.
+     */
+    readonly tenant?: string
 }

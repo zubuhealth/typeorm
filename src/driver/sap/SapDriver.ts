@@ -193,6 +193,7 @@ export class SapDriver implements Driver {
         metadataTable: "nvarchar",
         metadataName: "nvarchar",
         metadataValue: "nvarchar(5000)" as any,
+        tenant: "nvarchar",
     }
 
     /**

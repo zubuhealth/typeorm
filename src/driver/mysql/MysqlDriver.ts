@@ -283,6 +283,7 @@ export class MysqlDriver implements Driver {
         metadataTable: "varchar",
         metadataName: "varchar",
         metadataValue: "text",
+        tenant: "text",
     }
 
     /**

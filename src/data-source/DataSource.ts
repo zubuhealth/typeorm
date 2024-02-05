@@ -40,7 +40,7 @@ import { RelationIdLoader } from "../query-builder/RelationIdLoader"
 import { DriverUtils } from "../driver/DriverUtils"
 import { InstanceChecker } from "../util/InstanceChecker"
 import { ObjectLiteral } from "../common/ObjectLiteral"
-import { PostgresConnectionOptions } from "../driver/postgres/PostgresConnectionOptions"
+import { DataSourceOptions } from "./DataSourceOptions"
 
 registerQueryBuilders()
 
@@ -69,7 +69,7 @@ export class DataSource {
     /**
      * Connection options.
      */
-    readonly options: PostgresConnectionOptions
+    readonly options: DataSourceOptions
 
     /**
      * Indicates if DataSource is initialized or not.
@@ -138,7 +138,7 @@ export class DataSource {
     // Constructor
     // -------------------------------------------------------------------------
 
-    constructor(options: PostgresConnectionOptions) {
+    constructor(options: DataSourceOptions) {
         registerQueryBuilders()
         this.name = options.name || "default"
         this.options = options
@@ -207,7 +207,7 @@ export class DataSource {
     /**
      * Updates current connection options with provided options.
      */
-    setOptions(options: Partial<PostgresConnectionOptions>): this {
+    setOptions(options: Partial<DataSourceOptions>): this {
         Object.assign(this.options, options)
 
         if (options.logger || options.logging) {
@@ -697,10 +697,9 @@ export class DataSource {
         const flattenedSubscribers = ObjectUtils.mixedListToArray(
             this.options.subscribers || [],
         )
-        const subscribers =
-            await connectionMetadataBuilder.buildSubscribers(
-                flattenedSubscribers,
-            )
+        const subscribers = await connectionMetadataBuilder.buildSubscribers(
+            flattenedSubscribers,
+        )
         ObjectUtils.assign(this, { subscribers: subscribers })
 
         // build entity metadatas
@@ -722,8 +721,9 @@ export class DataSource {
         const flattenedMigrations = ObjectUtils.mixedListToArray(
             this.options.migrations || [],
         )
-        const migrations =
-            await connectionMetadataBuilder.buildMigrations(flattenedMigrations)
+        const migrations = await connectionMetadataBuilder.buildMigrations(
+            flattenedMigrations,
+        )
         ObjectUtils.assign(this, { migrations: migrations })
 
         // validate all created entity metadatas to make sure user created entities are valid and correct

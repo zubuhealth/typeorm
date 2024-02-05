@@ -459,13 +459,13 @@ export class TenantQueryBuilder<Entity extends ObjectLiteral>
         switch (this.expressionMap.queryType) {
             case "soft-delete":
                 updateColumnAndValues.push(
-                    this.escape(metadata.deleteDateColumn.databaseName) +
+                    this.escape(metadata.deleteDateColumn!.databaseName) +
                         " = CURRENT_TIMESTAMP",
                 )
                 break
             case "restore":
                 updateColumnAndValues.push(
-                    this.escape(metadata.deleteDateColumn.databaseName) +
+                    this.escape(metadata.deleteDateColumn!.databaseName) +
                         " = NULL",
                 )
                 break
@@ -474,7 +474,7 @@ export class TenantQueryBuilder<Entity extends ObjectLiteral>
                     `The queryType must be "soft-delete" or "restore"`,
                 )
         }
-        if (metadata.tenantColumn) {
+        if (metadata.tenantColumn && this.connection.options.tenant) {
             updateColumnAndValues.push(
                 this.escape(metadata.tenantColumn.databaseName) +
                     " = " +

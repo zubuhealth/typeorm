@@ -189,6 +189,7 @@ export abstract class AbstractSqliteDriver implements Driver {
      * Column types are driver dependant.
      */
     mappedDataTypes: MappedColumnTypes = {
+        tenant: "text",
         createDate: "datetime",
         createDateDefault: "datetime('now')",
         updateDate: "datetime",

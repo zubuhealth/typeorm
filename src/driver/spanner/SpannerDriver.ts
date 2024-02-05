@@ -155,6 +155,7 @@ export class SpannerDriver implements Driver {
         metadataTable: "string",
         metadataName: "string",
         metadataValue: "string",
+        tenant: "string",
     }
 
     /**

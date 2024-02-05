@@ -211,6 +211,7 @@ export class ReactNativeDriver implements Driver {
         metadataTable: "varchar",
         metadataName: "varchar",
         metadataValue: "text",
+        tenant: "text",
     }
 
     /**

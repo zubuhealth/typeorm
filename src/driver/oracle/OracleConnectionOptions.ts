@@ -58,4 +58,9 @@ export interface OracleConnectionOptions
          */
         readonly slaves: OracleConnectionCredentialsOptions[]
     }
+
+    /**
+     * The name of the tenant to use for this connection.
+     */
+    readonly tenant?: string
 }

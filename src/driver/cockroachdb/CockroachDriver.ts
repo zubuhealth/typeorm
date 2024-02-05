@@ -222,6 +222,7 @@ export class CockroachDriver implements Driver {
         metadataTable: "varchar",
         metadataName: "varchar",
         metadataValue: "string",
+        tenant: "string",
     }
 
     /**

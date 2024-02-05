@@ -43,4 +43,9 @@ export interface AuroraPostgresConnectionOptions extends BaseDataSourceOptions {
     readonly formatOptions?: { [key: string]: any; castParameters: boolean }
 
     readonly poolSize?: never
+
+    /**
+     * The name of the tenant to use for this connection.
+     */
+    readonly tenant?: string
 }

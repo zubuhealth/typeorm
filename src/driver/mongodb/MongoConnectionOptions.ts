@@ -347,4 +347,9 @@ export interface MongoConnectionOptions extends BaseDataSourceOptions {
      * Enables or disables the ability to retry writes upon encountering transient network errors.
      */
     readonly retryWrites?: boolean
+
+    /**
+     * The name of the tenant to use for this connection.
+     */
+    readonly tenant?: string
 }

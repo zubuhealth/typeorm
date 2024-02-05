@@ -874,7 +874,7 @@ export abstract class QueryBuilder<Entity extends ObjectLiteral> {
                 metadata.tenantColumn
             ) {
                 const column = this.expressionMap.aliasNamePrefixingEnabled
-                    ? this.expressionMap.mainAlias.name +
+                    ? this.expressionMap.mainAlias!.name +
                       "." +
                       metadata.tenantColumn.propertyName
                     : metadata.tenantColumn.propertyName

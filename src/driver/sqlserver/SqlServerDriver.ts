@@ -209,6 +209,7 @@ export class SqlServerDriver implements Driver {
         metadataTable: "varchar",
         metadataName: "varchar",
         metadataValue: "nvarchar(MAX)" as any,
+        tenant: "varchar",
     }
 
     /**

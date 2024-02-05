@@ -73,4 +73,9 @@ export interface CockroachConnectionOptions
      * Max number of transaction retries in case of 40001 error.
      */
     readonly maxTransactionRetries?: number
+
+    /**
+     * The name of the tenant to use for this connection.
+     */
+    readonly tenant?: string
 }

@@ -215,6 +215,7 @@ export class OracleDriver implements Driver {
         metadataTable: "varchar2",
         metadataName: "varchar2",
         metadataValue: "clob",
+        tenant: "varchar2",
     }
 
     /**
